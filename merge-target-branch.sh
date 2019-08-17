@@ -7,7 +7,11 @@
 set -eu -o pipefail
 
 # Fetch the target branch.
-PR_NUMBER=${CI_PULL_REQUEST//*pull\//}
+if [[ -n ${CI_PULL_REQUEST} ]]
+then
+    PR_NUMBER=${CI_PULL_REQUEST//*pull\//}
+fi
+
 if [ -z "$PR_NUMBER" ]; then
     echo "Not a pull request. Skipping this step."
     exit

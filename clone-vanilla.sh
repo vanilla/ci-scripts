@@ -9,8 +9,6 @@ TARGET_DIR="$HOME/workspace/vanilla"
 git clone git@github.com:vanilla/vanilla.git $TARGET_DIR
 cd $TARGET_DIR
 
-$TARGET_BRANCH="master"
-
 $repo_target=($CUSTOM_TARGET_BRANCH || $CIRCLE_BRANCH)
 
 # When our target branch is a release branch
