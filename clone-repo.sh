@@ -15,7 +15,7 @@ echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6Tb
 
 (umask 077; touch ~/.ssh/id_rsa)
 chmod 0600 ~/.ssh/id_rsa
-(cat \<<EOF > ~/.ssh/id_rsa
+(cat <<EOF > ~/.ssh/id_rsa
 $CHECKOUT_KEY
 EOF
 )
