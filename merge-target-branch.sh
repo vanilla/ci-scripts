@@ -30,7 +30,7 @@ cd $HOME/workspace/repo
 git config --global user.email "circleci@vanillaforums.com"
 git config --global user.name "CircleCI"
 err=0
-if [ -n "$target_branch" ]
+if [ -n "$CUSTOM_TARGET_BRANCH" ]
 then
     (set -x && git merge $CUSTOM_TARGET_BRANCH) || err=$?
 fi
