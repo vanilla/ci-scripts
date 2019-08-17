@@ -26,9 +26,11 @@ fi
 
 cd $HOME/workspace/repo
 
-# Merge target branch back into ourselves if we need to.
+# We need git configured for the merge commit.
 git config --global user.email "circleci@vanillaforums.com"
 git config --global user.name "CircleCI"
+
+# Merge target branch back into ourselves if we need to.
 err=0
 if [ -n "$CUSTOM_TARGET_BRANCH" ]
 then
