@@ -26,15 +26,15 @@ fi
 
 cd $HOME/workspace/repo
 
-# We need git configured for the merge commit.
-git config --global user.email "circleci@vanillaforums.com"
-git config --global user.name "CircleCI"
+# setup the github user
+git config --global user.email $( git log --format='%ae' $CIRCLE_SHA1^! )
+git config --global user.name $( git log --format='%an' $CIRCLE_SHA1^! )
 
 # Merge target branch back into ourselves if we need to.
 err=0
 if [ -n "$CUSTOM_TARGET_BRANCH" ]
 then
-    (set -x && git merge $CUSTOM_TARGET_BRANCH) || err=$?
+    (set -x && git fetch && git merge origin/$CUSTOM_TARGET_BRANCH --no-edit) || err=$?
 fi
 
 if [ "$err" -ne "0" ]
