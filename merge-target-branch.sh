@@ -24,7 +24,8 @@ then
     echo "CUSTOM_TARGET_BRANCH='$target_branch'" >> $BASH_ENV
 fi
 
-cd $TARGET_DIR
+cd ~workspace/repo
+
 # Merge target branch back into ourselves if we need to.
 err=0
 if [ -n "$CUSTOM_TARGET_BRANCH" ]
