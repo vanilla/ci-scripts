@@ -28,9 +28,9 @@ cd $HOME/workspace/repo
 
 # Merge target branch back into ourselves if we need to.
 err=0
-if [ -n "$CUSTOM_TARGET_BRANCH" ]
+if [ -n "$target_branch" ]
 then
-    (set -x && git merge $CUSTOM_TARGET_BRANCH) || err=$?
+    (set -x && git merge $target_branch) || err=$?
 fi
 
 if [ "$err" -ne "0" ]
