@@ -24,7 +24,6 @@ EOF
 git config --global url."ssh://git@github.com".insteadOf "https://github.com" || true
 git config --global gc.auto 0 || true
 
-mkdir $HOME/workspace
 TARGET_DIR=$HOME/workspace/repo
 
 # Clone the repo.
