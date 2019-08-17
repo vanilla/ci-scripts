@@ -1,4 +1,5 @@
-
+# #!/bin/bash
+#
 # Merges the target branch into our branch if possible.
 # this ensures that all tests pass with the latest upstream changes
 #
