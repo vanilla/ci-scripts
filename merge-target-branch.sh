@@ -17,23 +17,22 @@ if [[ -n ${PR_NUMBER} ]]
 then
     sudo apt-get update && sudo apt-get install -y jq
     url="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER?access_token=$GITHUB_TOKEN"
-    target_branch=$(
+    CUSTOM_TARGET_BRANCH=$(
         curl "$url" | jq '.base.ref' | tr -d '"'
     )
-    echo "Found target branch $target_branch".
-    echo "CUSTOM_TARGET_BRANCH='$target_branch'" >> $BASH_ENV
+    echo "Found target branch $CUSTOM_TARGET_BRANCH".
+    echo "CUSTOM_TARGET_BRANCH='$CUSTOM_TARGET_BRANCH'" >> $BASH_ENV
 fi
 
 cd $HOME/workspace/repo
-ls
-
-echo "$HOME/workspace/repo";
 
 # Merge target branch back into ourselves if we need to.
+git config --global user.email "circleci@vanillaforums.com"
+git config --global user.name "CircleCI"
 err=0
 if [ -n "$target_branch" ]
 then
-    (set -x && git merge $target_branch) || err=$?
+    (set -x && git merge $CUSTOM_TARGET_BRANCH) || err=$?
 fi
 
 if [ "$err" -ne "0" ]
