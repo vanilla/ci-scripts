@@ -22,3 +22,9 @@ fi
 
 ## Temporary workaround until we have our circle config on master
 git checkout feature/no-travis
+
+cd $HOME/workspace/vanilla/plugins
+ln -s $HOME/workspace/repo/plugins/* .
+
+cd $HOME/workspace/vanilla/applications
+ln -s $HOME/workspace/repo/applications/* .
