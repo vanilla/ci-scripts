@@ -25,6 +25,9 @@ then
 fi
 
 cd $HOME/workspace/repo
+ls
+
+echo "$HOME/workspace/repo";
 
 # Merge target branch back into ourselves if we need to.
 err=0
