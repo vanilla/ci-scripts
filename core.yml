@@ -1,3 +1,4 @@
+description: "A set of executors and commands to build vanilla"
 version: 2.1
 aliases:
     - &db_env
@@ -26,6 +27,7 @@ executors:
             - image: circleci/node:lts-browsers
 commands:
     checkout:
+        description: "Clone necessary repos"
         steps:
             - run:
                     name: Clone Scripts
@@ -37,6 +39,7 @@ commands:
                     name: Merge Target Branch
                     command: ~/workspace/ci-scripts/merge-target-branch.sh
     prepare_php_tests:
+        description: "Prepare mysql"
         steps:
             - run:
                     name: Prepare MySQL
@@ -48,6 +51,7 @@ commands:
                         echo 127.0.0.1 vanilla.test | sudo tee -a /etc/hosts
                         cat /etc/hosts
     prepare_nginx:
+        description: "Setup nginx server"
         steps:
             - run:
                     name: Prepare NGINX
