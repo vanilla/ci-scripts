@@ -1,0 +1,57 @@
+aliases:
+    - &db_env
+        MYSQL_USER: circleci
+        MYSQL_PASSWORD: ''
+        MYSQL_DATABASE: vanilla_test
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+executors:
+    php71:
+        docker:
+            - image: circleci/php:7.1.30-fpm-node
+            - image: mysql:5.7.26
+                environment: *db_env
+    php72:
+        docker:
+            - image: circleci/php:7.2.19-fpm-node
+            - image: mysql:5.7.26
+                 environment: *db_env
+    php73:
+        docker:
+            - image: circleci/php:7.3.6-fpm-node
+            - image: mysql:5.7.26
+                environment: *db_env
+    node:
+        docker:
+            - image: circleci/node:lts-browsers
+commands:
+    checkout:
+        steps:
+            - run:
+                    name: Clone Scripts
+                    command: git clone https://github.com/vanilla/ci-scripts.git ~/workspace/ci-scripts
+            - run:
+                    name: Clone Repo
+                    command: ~/workspace/ci-scripts/clone-repo.sh
+            - run:
+                    name: Merge Target Branch
+                    command: ~/workspace/ci-scripts/merge-target-branch.sh
+    prepare_php_tests:
+        steps:
+            - run:
+                    name: Prepare MySQL
+                    command: ~/workspace/ci-scripts/prepare-mysql.sh
+            - run:
+                    name: Configuring Hosts
+                    command: |
+                        # Localhost redirects
+                        echo 127.0.0.1 vanilla.test | sudo tee -a /etc/hosts
+                        cat /etc/hosts
+    prepare_nginx:
+        steps:
+            - run:
+                    name: Prepare NGINX
+                    command: |
+                        sudo apt-get update && sudo apt-get install nginx
+                        cd  ~/workspace/repo
+                        php-fpm --daemonize
+                        sudo ./.circleci/scripts/start-nginx.sh
