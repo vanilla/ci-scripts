@@ -1,3 +1,4 @@
+version: 2.1
 aliases:
     - &db_env
         MYSQL_USER: circleci
@@ -9,17 +10,17 @@ executors:
         docker:
             - image: circleci/php:7.1.30-fpm-node
             - image: mysql:5.7.26
-                environment: *db_env
+              environment: *db_env
     php72:
         docker:
             - image: circleci/php:7.2.19-fpm-node
             - image: mysql:5.7.26
-                 environment: *db_env
+              environment: *db_env
     php73:
         docker:
             - image: circleci/php:7.3.6-fpm-node
             - image: mysql:5.7.26
-                environment: *db_env
+              environment: *db_env
     node:
         docker:
             - image: circleci/node:lts-browsers
