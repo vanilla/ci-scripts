@@ -1,5 +1,5 @@
-description: "A set of executors and commands to build vanilla"
 version: 2.1
+description: "A set of executors and commands to build vanilla"
 aliases:
     - &db_env
         MYSQL_USER: circleci
