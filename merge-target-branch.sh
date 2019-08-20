@@ -4,13 +4,15 @@
 # this ensures that all tests pass with the latest upstream changes
 #
 # https://ideas.circleci.com/ideas/CCI-I-431
-set -eu -o pipefail
+set -e -o pipefail
 
 # Fetch the target branch.
-if [[ -n ${CI_PULL_REQUEST} ]]
+if [ -z $CI_PULL_REQUEST ]
 then
-    PR_NUMBER=${CI_PULL_REQUEST//*pull\//}
+  exit 0
 fi
+
+PR_NUMBER=${CI_PULL_REQUEST//*pull\//}
 
 if [ -z "$PR_NUMBER" ]; then
     echo "Not a pull request. Skipping this step."
