@@ -42,7 +42,7 @@ jobs:
                     command: |
                         node --version
                         yarn --version
-            - checkout
+            - core/checkout
             - run:
                     name: Clone Vanilla Repo
                     command: ~/workspace/ci-scripts/clone-vanilla.sh
@@ -104,8 +104,8 @@ jobs:
                     command: |
                         php --version
                         composer --version
-            - checkout
-            -   run: ./ci-scripts/clone-vanilla.sh
+            - core/checkout
+            -   run: ~/workspace/ci-scripts/clone-vanilla.sh
             # We explcitly don't cache dependencies.
             # The cache validation & fetching seems to take longer than fetching from source.
             - *run_composer
@@ -118,7 +118,7 @@ jobs:
     php_72_lint:
         executor: core/php72
         steps: &php_lint_steps
-            - checkout
+            - core/checkout
             -   run: ~/workspace/ci-scripts/clone-vanilla.sh
             - *run_composer
             - *run_php_lint
@@ -151,6 +151,6 @@ jobs:
     dependency_audit:
         executor: core/php72
         steps:
-            - checkout
+            - core/checkout
             -   run: ~/workspace/ci-scripts/clone-vanilla.sh
             -   run: yarn audit
