@@ -20,7 +20,7 @@ jobs:
             - checkout
             - run:
                 name: "Installing CircleCI CLI"
-                command: circleci --help
+                command: circleci version
             - run:
                 name: "Publish Prod"
                 command: "./.circleci/publish-changed.sh"
