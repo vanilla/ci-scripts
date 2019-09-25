@@ -5,6 +5,7 @@ jobs:
             # Primary container image where all steps run.
             - image: buildpack-deps:trusty
         steps:
+            - checkout
             - run:
                 name: "Publish Dev"
                 command: "./.circleci/publish-changed.sh --dev"
@@ -13,6 +14,7 @@ jobs:
             # Primary container image where all steps run.
             - image: buildpack-deps:trusty
         steps:
+            - checkout
             - run:
                 name: "Publish Prod"
                 command: "./.circleci/publish-changed.sh"
