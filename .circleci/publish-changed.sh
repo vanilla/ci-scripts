@@ -1,7 +1,6 @@
 #!/bin/bash
 
-set -x
-set -e -f -o pipefail
+set -e -o pipefail
 
 DIR=`dirname "$0"`
 REPO_ROOT=$(cd "$DIR/../" && pwd)
@@ -15,13 +14,12 @@ elif [ -z "$CIRCLE_TOKEN" ]; then
     exit 1
 fi
 
-diffedYmlOutput=$(git diff --name-only -- '*.yml' )
-diffedArrayFiles=($(echo $diffedYmlOutput | tr " " "\n"))
+orbs=(./orbs/*)
 
-if [ -n $CIRCLE_BRANCH ]; then
+if [ -n "$CIRCLE_BRANCH" ]; then
     currentBranch=$CIRCLE_BRANCH
-elif [ -n $CIRCLE_SHA1 ]; then
-    currentBranch=$CIRCLE_BRANCH
+elif [ -n "$CIRCLE_SHA1" ]; then
+    currentBranch=$CIRCLE_SHA1
 else
     currentBranch=$(git rev-parse --abbrev-ref HEAD)
 fi
@@ -31,11 +29,9 @@ function yaml2json() {
 }
 
 # Print each value of the array by using the loop
-for yamlFile in "${diffedArrayFiles[@]}";
+for orb in "${orbs[@]}";
 do
-    # echo $yamlFile
-    fileName="$REPO_ROOT/$yamlFile"
-    echo $fileName
+    fileName=$orb
     fileContents=$(cat "$fileName")
     json=$(cat "$fileName" | yaml2json)
     version=$(echo $json | jq -r ".publishVersion")
