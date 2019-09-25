@@ -7,8 +7,8 @@ jobs:
         steps:
             - checkout
             - run:
-                name: "Installing CircleCI CLI"
-                command: curl -fLSs https://circle.ci/cli | bash
+                name: "Ensure up to date CircleCI CLI"
+                command: circleci update
             - run:
                 name: "Publish Dev"
                 command: "./.circleci/publish-changed.sh --dev"
@@ -19,8 +19,8 @@ jobs:
         steps:
             - checkout
             - run:
-                name: "Installing CircleCI CLI"
-                command: circleci version
+                name: "Ensure up to date CircleCI CLI"
+                command: circleci update
             - run:
                 name: "Publish Prod"
                 command: "./.circleci/publish-changed.sh"
