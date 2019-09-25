@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -o pipefail
+set -o pipefail
 
 DIR=`dirname "$0"`
 REPO_ROOT=$(cd "$DIR/../" && pwd)
