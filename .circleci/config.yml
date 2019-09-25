@@ -3,7 +3,7 @@ jobs:
     publish_dev:
         docker:
             # Primary container image where all steps run.
-            - image: buildpack-deps:trusty
+            - image: circleci/ruby:latest
         steps:
             - checkout
             - run:
@@ -12,7 +12,7 @@ jobs:
     publish_prod:
         docker:
             # Primary container image where all steps run.
-            - image: buildpack-deps:trusty
+            - image: circleci/ruby:latest
         steps:
             - checkout
             - run:
