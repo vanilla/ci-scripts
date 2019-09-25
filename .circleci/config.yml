@@ -1,0 +1,32 @@
+version: 2.1
+jobs:
+    publish_dev:
+        docker:
+            # Primary container image where all steps run.
+            - image: buildpack-deps:trusty
+        steps:
+            - checkout
+            - run:
+                name: "Publish Dev"
+                command: "./.circleci/publish-changed.sh --dev"
+    publish_prod:
+        docker:
+            # Primary container image where all steps run.
+            - image: buildpack-deps:trusty
+        steps:
+            - checkout
+            - run:
+                name: "Publish Prod"
+                command: "./.circleci/publish-changed.sh"
+workflows:
+    version: 2
+    commit:
+        jobs:
+            - publish_dev:
+                filters:
+                    branches:
+                        ignore: master
+            - publish_prod:
+                filters:
+                    branches:
+                        only: master
