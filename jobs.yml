@@ -1,4 +1,6 @@
 version: 2.1
+publishVersion: 0.1.0
+name: "vanilla/jobs"
 description: "A set of jobs that vanilla needs to run"
 orbs:
     core: vanilla/core@2.1.0
@@ -119,9 +121,17 @@ jobs:
         executor: core/php72
         steps: &php_lint_steps
             - core/checkout
-            -   run: ~/workspace/ci-scripts/clone-vanilla.sh
-            - *run_composer
-            - *run_php_lint
+            - run: ~/workspace/ci-scripts/clone-vanilla.sh
+            - run:
+                name: Composer Install
+                command: |
+                    cd ~/workspace/vanilla
+                    VANILLA_BUILD_DISABLE_AUTO_BUILD=true composer install --optimize-autoloader
+            - run:
+                name: Lint Changed filters
+                command: |
+                    cd ~/workspace/vanilla
+                    ~/workspace/vanilla/.circleci/scripts/diff-standards.sh $CUSTOM_TARGET_BRANCH ~/workspace/repo
     php_72_tests:
         executor: core/php72
         steps: &php_unit_test_steps

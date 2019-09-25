@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+    publish_dev:
+        docker:
+            # Primary container image where all steps run.
+            - image: buildpack-deps:trusty
+        steps:
+            - run:
+                name: "Publish Dev"
+                command: "./.circleci/publish-changed.sh"
+workflows:
+    version: 2
+    commit:
+        jobs:
+            - chromatic/test:
+                filters:
+                    branches:
+                        ignore: master
+            - chromatic/run-and-accept-all:
+                filters:
+                    branches:
+                        only: master
