@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -x
 set -e -f -o pipefail
 
 DIR=`dirname "$0"`
