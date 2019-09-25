@@ -7,6 +7,9 @@ jobs:
         steps:
             - checkout
             - run:
+                name: "Installing CircleCI CLI"
+                command: curl -fLSs https://circle.ci/cli | bash
+            - run:
                 name: "Publish Dev"
                 command: "./.circleci/publish-changed.sh --dev"
     publish_prod:
@@ -15,6 +18,9 @@ jobs:
             - image: circleci/ruby:latest
         steps:
             - checkout
+            - run:
+                name: "Installing CircleCI CLI"
+                command: curl -fLSs https://circle.ci/cli | bash
             - run:
                 name: "Publish Prod"
                 command: "./.circleci/publish-changed.sh"
