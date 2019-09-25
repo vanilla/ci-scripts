@@ -21,7 +21,6 @@ fi
 
 if [[ -n ${PR_NUMBER} ]]
 then
-    sudo apt-get update && sudo apt-get install -y jq
     url="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER?access_token=$GITHUB_TOKEN"
     CUSTOM_TARGET_BRANCH=$(
         curl "$url" | jq '.base.ref' | tr -d '"'
