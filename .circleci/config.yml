@@ -20,7 +20,7 @@ jobs:
             - checkout
             - run:
                 name: "Installing CircleCI CLI"
-                command: curl -fLSs https://circle.ci/cli | bash
+                command: circleci --help
             - run:
                 name: "Publish Prod"
                 command: "./.circleci/publish-changed.sh"
