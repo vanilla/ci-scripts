@@ -7,16 +7,24 @@ jobs:
         steps:
             - run:
                 name: "Publish Dev"
+                command: "./.circleci/publish-changed.sh --dev"
+    publish_prod:
+        docker:
+            # Primary container image where all steps run.
+            - image: buildpack-deps:trusty
+        steps:
+            - run:
+                name: "Publish Prod"
                 command: "./.circleci/publish-changed.sh"
 workflows:
     version: 2
     commit:
         jobs:
-            - chromatic/test:
+            - publish_dev:
                 filters:
                     branches:
                         ignore: master
-            - chromatic/run-and-accept-all:
+            - publish_prod:
                 filters:
                     branches:
                         only: master
