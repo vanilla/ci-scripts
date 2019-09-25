@@ -21,20 +21,6 @@ aliases:
             command: |
                 cd ~/workspace/vanilla
                 VANILLA_BUILD_DISABLE_AUTO_BUILD=true composer install --optimize-autoloader
-    - &run_php_lint
-        run:
-            name: Linting PHP
-            command: |
-                cd ~/workspace/vanilla
-                # Validate syntax in all the files
-                .circleci/scripts/php-lint.sh ./applications
-                .circleci/scripts/php-lint.sh ./conf
-                .circleci/scripts/php-lint.sh ./library
-                .circleci/scripts/php-lint.sh ./plugins
-                .circleci/scripts/php-lint.sh ./themes
-
-                # Run code sniffer on the diffed files.
-                ./.circleci/scripts/diff-standards.sh $CUSTOM_TARGET_BRANCH
 jobs:
     frontend_setup:
         executor: core/node
@@ -128,10 +114,20 @@ jobs:
                     cd ~/workspace/vanilla
                     VANILLA_BUILD_DISABLE_AUTO_BUILD=true composer install --optimize-autoloader
             - run:
-                name: Lint Changed filters
+                name: Lint Changed Files (Coding Standard)
                 command: |
                     cd ~/workspace/vanilla
                     ~/workspace/vanilla/.circleci/scripts/diff-standards.sh $CUSTOM_TARGET_BRANCH ~/workspace/repo
+            - run:
+                name: Check Syntax (all files)
+                command: |
+                    cd ~/workspace/vanilla
+                    # Validate syntax in all the files
+                    .circleci/scripts/php-lint.sh ./applications
+                    .circleci/scripts/php-lint.sh ./conf
+                    .circleci/scripts/php-lint.sh ./library
+                    .circleci/scripts/php-lint.sh ./plugins
+                    .circleci/scripts/php-lint.sh ./themes
     php_72_tests:
         executor: core/php72
         steps: &php_unit_test_steps
@@ -146,12 +142,12 @@ jobs:
                     name: Library Tests
                     command: |
                         cd ~/workspace/vanilla
-                        ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Library"
+                        ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Library" --testdox
             -   run:
                     name: APIv2 Tests
                     command: |
                         cd ~/workspace/vanilla
-                        ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="APIv2"
+                        ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="APIv2" --testdox
     php_73_lint:
         executor: core/php73
         steps: *php_lint_steps
