@@ -3,7 +3,7 @@ publishVersion: 1.2.0
 name: "vanilla/jobs"
 description: "A set of jobs that vanilla needs to run"
 orbs:
-    core: vanilla/core@2.1
+    core: vanilla/core@dev:feature/sphinx-support
 aliases:
     - &run_yarn
       run:
