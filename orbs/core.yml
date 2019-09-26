@@ -1,13 +1,18 @@
 version: 2.1
-publishVersion: 2.1.0
+publishVersion: 2.2.0
 name: "vanilla/core"
 description: "A set of executors and commands to build vanilla"
 aliases:
     - &db_env
-        MYSQL_USER: circleci
-        MYSQL_PASSWORD: ''
-        MYSQL_DATABASE: vanilla_test
-        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_USER: circleci
+      MYSQL_PASSWORD: ""
+      MYSQL_DATABASE: vanilla_test
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    - &sphinx_env
+      MYSQL_HOST: 127.0.0.1
+      MYSQL_USER: circleci
+      MYSQL_PASSWORD: ""
+      MYSQL_DATABASE: vanilla_test
 executors:
     php71:
         docker:
@@ -24,6 +29,13 @@ executors:
             - image: circleci/php:7.3.6-fpm-node
             - image: mysql:5.7.26
               environment: *db_env
+    sphinx:
+        docker:
+            - image: circleci/php:7.2.19-fpm-node
+            - image: dzsysop/sphinx-vanilla
+              environment: *sphinx_env
+            - image: mysql:5.7.26
+              environment: *db_env
     node:
         docker:
             - image: circleci/node:lts-browsers
@@ -32,33 +44,58 @@ commands:
         description: "Clone necessary repos"
         steps:
             - run:
-                    name: Clone Scripts
-                    command: git clone https://github.com/vanilla/ci-scripts.git ~/workspace/ci-scripts
+                  name: Clone Scripts
+                  command: git clone https://github.com/vanilla/ci-scripts.git ~/workspace/ci-scripts
             - run:
-                    name: Clone Repo
-                    command: ~/workspace/ci-scripts/clone-repo.sh
+                  name: Clone Repo
+                  command: ~/workspace/ci-scripts/clone-repo.sh
             - run:
-                    name: Merge Target Branch
-                    command: ~/workspace/ci-scripts/merge-target-branch.sh
+                  name: Merge Target Branch
+                  command: ~/workspace/ci-scripts/merge-target-branch.sh
     prepare_php_tests:
         description: "Prepare mysql"
         steps:
             - run:
-                    name: Prepare MySQL
-                    command: ~/workspace/ci-scripts/prepare-mysql.sh
+                  name: Prepare MySQL
+                  command: ~/workspace/ci-scripts/prepare-mysql.sh
             - run:
-                    name: Configuring Hosts
-                    command: |
-                        # Localhost redirects
-                        echo 127.0.0.1 vanilla.test | sudo tee -a /etc/hosts
-                        cat /etc/hosts
+                  name: Configuring Hosts
+                  command: |
+                      # Localhost redirects
+                      echo 127.0.0.1 vanilla.test | sudo tee -a /etc/hosts
+                      cat /etc/hosts
     prepare_nginx:
         description: "Setup nginx server"
         steps:
             - run:
-                    name: Prepare NGINX
-                    command: |
-                        sudo apt-get update && sudo apt-get install nginx
-                        cd  ~/workspace/repo
-                        php-fpm --daemonize
-                        sudo ./.circleci/scripts/start-nginx.sh
+                  name: Prepare NGINX
+                  command: |
+                      sudo apt-get update && sudo apt-get install nginx
+                      cd  ~/workspace/repo
+                      php-fpm --daemonize
+                      sudo ./.circleci/scripts/start-nginx.sh
+    composer_install:
+        description: Install Composer Packages
+        steps:
+            - run:
+                  command: |
+                      cd ~/workspace/vanilla
+                      VANILLA_BUILD_DISABLE_AUTO_BUILD=true composer install --optimize-autoloader
+    prepare_sphinx:
+        description: Prepare Vanilla to run with sphinx
+        steps:
+            - run:
+                  name: Sphinx Configuration
+                  command: |
+                      cd ~/workspace/vanilla
+                      cp ./.circleci/scripts/templates/vanilla/conf/bootstrap.before.php ./conf/bootstrap.before.php
+                      cp ~/workspace/ci-scripts/sphinxapi.php ./sphinxapi.php
+                      echo $'\nrequire_once("../sphinxapi.php");' | tee -a ./conf/bootstrap.before.php
+    run_sphinx_test_suite:
+        description: Run all tests in the Sphinx test suite
+        steps:
+            - run:
+                  name: Run Sphinx Test Group
+                  command: |
+                      cd ~/workspace/vanilla
+                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Sphinx" --testdox
