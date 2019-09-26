@@ -1,153 +1,143 @@
 version: 2.1
-publishVersion: 1.1.0
+publishVersion: 1.2.0
 name: "vanilla/jobs"
 description: "A set of jobs that vanilla needs to run"
 orbs:
-    core: vanilla/core@2.1.0
+    core: vanilla/core@2.1
 aliases:
     - &run_yarn
-        run:
-            name: Install Yarn Packages
-            command: |
-                cd ~/workspace/vanilla
-                yarn install --pure-lockfile
-                yarn install-all
+      run:
+          name: Install Yarn Packages
+          command: |
+              cd ~/workspace/vanilla
+              yarn install --pure-lockfile
+              yarn install-all
     - &attach_workspace
-        attach_workspace:
-            at: ~/workspace
-    - &run_composer
-        run:
-            name: Install Composer Packages
-            command: |
-                cd ~/workspace/vanilla
-                VANILLA_BUILD_DISABLE_AUTO_BUILD=true composer install --optimize-autoloader
+      attach_workspace:
+          at: ~/workspace
 jobs:
     frontend_setup:
         executor: core/node
         steps:
             - run:
-                    name: Versions
-                    command: |
-                        node --version
-                        yarn --version
+                  name: Versions
+                  command: |
+                      node --version
+                      yarn --version
             - core/checkout
             - run:
-                    name: Clone Vanilla Repo
-                    command: ~/workspace/ci-scripts/clone-vanilla.sh
+                  name: Clone Vanilla Repo
+                  command: ~/workspace/ci-scripts/clone-vanilla.sh
             - run:
-                    # Makes workspace persisting much faster if not needed.
-                    name: Cleaning up git directory
-                    command: |
-                        cd ~/workspace/vanilla
-                        rm -rf .git
-                    # We explcitly don't cache dependencies.
-                    # The cache validation & fetching seems to take longer than fetching from source.
+                  # Makes workspace persisting much faster if not needed.
+                  name: Cleaning up git directory
+                  command: |
+                      cd ~/workspace/vanilla
+                      rm -rf .git
+                  # We explcitly don't cache dependencies.
+                  # The cache validation & fetching seems to take longer than fetching from source.
             - *run_yarn
             - persist_to_workspace:
-                    root: ~/workspace
-                    paths:
-                        - repo
-                        - ci-scripts
-                        - vanilla
+                  root: ~/workspace
+                  paths:
+                      - repo
+                      - ci-scripts
+                      - vanilla
     frontend_build:
         executor: core/node
         resource_class: large
         steps:
             - *attach_workspace
-            -   run:
-                    name: Build Frontend
-                    command: |
-                        cd ~/workspace/vanilla
-                        yarn build
+            - run:
+                  name: Build Frontend
+                  command: |
+                      cd ~/workspace/vanilla
+                      yarn build
     frontend_test:
         executor: core/node
         steps:
             - *attach_workspace
-            -   run:
-                    name: Build Frontend
-                    command: |
-                        cd ~/workspace/vanilla
-                        yarn test
+            - run:
+                  name: Build Frontend
+                  command: |
+                      cd ~/workspace/vanilla
+                      yarn test
     frontend_lint:
         executor: core/node
         steps:
             - *attach_workspace
-            -   run: |
-                    cd ~/workspace/vanilla
-                    yarn lint
-                    yarn prettier --check "**/src/scripts/**/*"
+            - run: |
+                  cd ~/workspace/vanilla
+                  yarn lint
+                  yarn prettier --check "**/src/scripts/**/*"
     frontend_typechecker:
         executor: core/node
         resource_class: large
         steps:
             - *attach_workspace
-            -   run: |
-                    cd ~/workspace/vanilla
-                    yarn check-types
+            - run: |
+                  cd ~/workspace/vanilla
+                  yarn check-types
     php_setup:
         executor: core/php72
         steps:
-            -   run:
-                    name: Versions
-                    command: |
-                        php --version
-                        composer --version
+            - run:
+                  name: Versions
+                  command: |
+                      php --version
+                      composer --version
             - core/checkout
-            -   run: ~/workspace/ci-scripts/clone-vanilla.sh
+            - run: ~/workspace/ci-scripts/clone-vanilla.sh
             # We explcitly don't cache dependencies.
             # The cache validation & fetching seems to take longer than fetching from source.
-            - *run_composer
-            -   persist_to_workspace:
-                    root: ~/workspace
-                    paths:
-                        - repo
-                        - ci-scripts
-                        - vanilla
+            - core/composer_install
+            - persist_to_workspace:
+                  root: ~/workspace
+                  paths:
+                      - repo
+                      - ci-scripts
+                      - vanilla
     php_72_lint:
         executor: core/php72
         steps: &php_lint_steps
             - core/checkout
             - run: ~/workspace/ci-scripts/clone-vanilla.sh
+            - core/composer_install
             - run:
-                name: Composer Install
-                command: |
-                    cd ~/workspace/vanilla
-                    VANILLA_BUILD_DISABLE_AUTO_BUILD=true composer install --optimize-autoloader
+                  name: Lint Changed Files (Coding Standard)
+                  command: |
+                      cd ~/workspace/vanilla
+                      ~/workspace/vanilla/.circleci/scripts/diff-standards.sh $CUSTOM_TARGET_BRANCH ~/workspace/repo
             - run:
-                name: Lint Changed Files (Coding Standard)
-                command: |
-                    cd ~/workspace/vanilla
-                    ~/workspace/vanilla/.circleci/scripts/diff-standards.sh $CUSTOM_TARGET_BRANCH ~/workspace/repo
-            - run:
-                name: Check Syntax (all files)
-                command: |
-                    cd ~/workspace/vanilla
-                    # Validate syntax in all the files
-                    .circleci/scripts/php-lint.sh ./applications
-                    .circleci/scripts/php-lint.sh ./conf
-                    .circleci/scripts/php-lint.sh ./library
-                    .circleci/scripts/php-lint.sh ./plugins
-                    .circleci/scripts/php-lint.sh ./themes
+                  name: Check Syntax (all files)
+                  command: |
+                      cd ~/workspace/vanilla
+                      # Validate syntax in all the files
+                      .circleci/scripts/php-lint.sh ./applications
+                      .circleci/scripts/php-lint.sh ./conf
+                      .circleci/scripts/php-lint.sh ./library
+                      .circleci/scripts/php-lint.sh ./plugins
+                      .circleci/scripts/php-lint.sh ./themes
     php_72_tests:
         executor: core/php72
         steps: &php_unit_test_steps
             - *attach_workspace
-            -   run:
-                    name: Test setup
-                    command: |
-                        cd ~/workspace/vanilla
-                        cp ./.circleci/scripts/templates/vanilla/conf/bootstrap.before.php ./conf/bootstrap.before.php
+            - run:
+                  name: Test setup
+                  command: |
+                      cd ~/workspace/vanilla
+                      cp ./.circleci/scripts/templates/vanilla/conf/bootstrap.before.php ./conf/bootstrap.before.php
             - core/prepare_php_tests
-            -   run:
-                    name: Library Tests
-                    command: |
-                        cd ~/workspace/vanilla
-                        ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Library" --testdox
-            -   run:
-                    name: APIv2 Tests
-                    command: |
-                        cd ~/workspace/vanilla
-                        ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="APIv2" --testdox
+            - run:
+                  name: Library Tests
+                  command: |
+                      cd ~/workspace/vanilla
+                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Library" --testdox
+            - run:
+                  name: APIv2 Tests
+                  command: |
+                      cd ~/workspace/vanilla
+                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="APIv2" --testdox
     php_73_lint:
         executor: core/php73
         steps: *php_lint_steps
@@ -158,5 +148,5 @@ jobs:
         executor: core/php72
         steps:
             - core/checkout
-            -   run: ~/workspace/ci-scripts/clone-vanilla.sh
-            -   run: yarn audit
+            - run: ~/workspace/ci-scripts/clone-vanilla.sh
+            - run: yarn audit
