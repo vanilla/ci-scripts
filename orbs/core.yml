@@ -31,10 +31,10 @@ executors:
               environment: *db_env
     sphinx:
         docker:
+            - name: sphinx
             - image: circleci/php:7.2.19-fpm-node
             - image: dzsysop/sphinx-vanilla
               environment: *sphinx_env
-              name: sphinx
             - image: mysql:5.7.26
               environment: *db_env
     node:
