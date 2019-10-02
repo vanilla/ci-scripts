@@ -36,6 +36,7 @@ executors:
               environment: *sphinx_env
             - image: mysql:5.7.26
               environment: *db_env
+            - name: sphinx
     node:
         docker:
             - image: circleci/node:lts-browsers
