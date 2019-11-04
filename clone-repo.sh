@@ -43,8 +43,13 @@ if [ -n "$CIRCLE_TAG" ]
 then
     git fetch --force origin "refs/tags/${CIRCLE_TAG}"
 else
-    echo "Fetching branch $CIRCLE_BRANCH"
-    git fetch --force origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}"
+    LOCAL_REF=$CIRCLE_BRANCH
+    if [[$LOCAL_REF == pull*]];
+    then
+        # branch names that start with "pull/" need to have "/head" appended to them.
+        LOCAL_REF="${LOCAL_REF}/head"
+    fi
+    git fetch --force origin "${LOCAL_REF}:remotes/origin/${CIRCLE_BRANCH}"
 fi
 
 if [ -n "$CIRCLE_TAG" ]
@@ -52,7 +57,6 @@ then
     git checkout -q "$CIRCLE_TAG"
 elif [ -n "$CIRCLE_BRANCH" ]
 then
-    echo "Checking out branch $CIRCLE_BRANCH"
     git checkout -q "$CIRCLE_BRANCH"
 fi
 # Ensures the remote and local branch are in sync after the fetch (see above).
