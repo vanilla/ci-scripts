@@ -44,7 +44,7 @@ then
     git fetch --force origin "refs/tags/${CIRCLE_TAG}"
 else
     LOCAL_REF=$CIRCLE_BRANCH
-    if [[$LOCAL_REF == pull*]];
+    if [[ $LOCAL_REF == pull* ]];
     then
         # branch names that start with "pull/" need to have "/head" appended to them.
         LOCAL_REF="${LOCAL_REF}/head"
