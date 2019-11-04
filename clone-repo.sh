@@ -44,7 +44,7 @@ then
     git fetch --force origin "refs/tags/${CIRCLE_TAG}"
 else
     echo "Fetching branch $CIRCLE_BRANCH"
-    git fetch --force origin "${CIRCLE_BRANCH}:remotes/origin/${CIRCLE_BRANCH}"
+    git fetch --force origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}"
 fi
 
 if [ -n "$CIRCLE_TAG" ]
