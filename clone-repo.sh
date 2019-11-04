@@ -30,6 +30,7 @@ TARGET_DIR="$HOME/workspace/repo"
 if [ -e $TARGET_DIR/.git ]
 then
     cd $TARGET_DIR
+    echo "Setting origin to $CIRCLE_REPOSITORY_URL"
     git remote set-url origin "$CIRCLE_REPOSITORY_URL" || true
 else
     mkdir -p $TARGET_DIR
@@ -42,6 +43,7 @@ if [ -n "$CIRCLE_TAG" ]
 then
     git fetch --force origin "refs/tags/${CIRCLE_TAG}"
 else
+    echo "Fetching branch $CIRCLE_BRANCH"
     git fetch --force origin "${CIRCLE_BRANCH}:remotes/origin/${CIRCLE_BRANCH}"
 fi
 
@@ -50,6 +52,7 @@ then
     git checkout -q "$CIRCLE_TAG"
 elif [ -n "$CIRCLE_BRANCH" ]
 then
+    echo "Checking out branch $CIRCLE_BRANCH"
     git checkout -q "$CIRCLE_BRANCH"
 fi
 # Ensures the remote and local branch are in sync after the fetch (see above).
