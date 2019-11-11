@@ -13,8 +13,9 @@ repo_target=${CUSTOM_TARGET_BRANCH: -$CIRCLE_BRANCH}
 
 # When our target branch is a release branch
 # We want to use the same target branch
-if [[ $repo_target == "release/*" ]]
+if [[ $repo_target == release* ]]
 then
+    echo "Using vanilla release branch: $repo_target"
     git checkout $repo_target
 fi
 
