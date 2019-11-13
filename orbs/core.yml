@@ -98,4 +98,4 @@ commands:
                   name: Run Sphinx Test Group
                   command: |
                       cd ~/workspace/vanilla
-                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Sphinx" --testdox
+                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Sphinx"
