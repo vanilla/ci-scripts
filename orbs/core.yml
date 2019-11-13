@@ -1,5 +1,5 @@
 version: 2.1
-publishVersion: 2.2.0
+publishVersion: 2.2.1
 name: "vanilla/core"
 description: "A set of executors and commands to build vanilla"
 aliases:
