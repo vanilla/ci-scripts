@@ -132,12 +132,12 @@ jobs:
                   name: Library Tests
                   command: |
                       cd ~/workspace/vanilla
-                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Library" --testdox
+                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Library"
             - run:
                   name: APIv2 Tests
                   command: |
                       cd ~/workspace/vanilla
-                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="APIv2" --testdox
+                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="APIv2"
     php_73_lint:
         executor: core/php73
         steps: *php_lint_steps
