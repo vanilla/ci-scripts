@@ -1,5 +1,5 @@
 version: 2.1
-publishVersion: 1.2.0
+publishVersion: 1.2.1
 name: "vanilla/jobs"
 description: "A set of jobs that vanilla needs to run"
 orbs:
