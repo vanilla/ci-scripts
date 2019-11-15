@@ -16,5 +16,22 @@ cd $TARGET_DIR
 git init
 git pull "https://$GITHUB_TOKEN@github.com/vanilla/$REPO.git"
 
+repo_target=$CIRCLE_BRANCH
+
+if [[ -n $CUSTOM_TARGET_BRANCH ]];
+then
+    repo_target=$CUSTOM_TARGET_BRANCH
+fi
+
+# When our target branch is a release branch
+# We want to use the same target branch
+if [[ $repo_target == release* ]]
+then
+    echo "Using vanilla release branch: $repo_target"
+    git checkout $repo_target
+else
+    echo "Repository target is $repo_target"
+fi
+
 cd $HOME/workspace/vanilla/plugins
 ln -s $HOME/workspace/$REPO/plugins/* .
