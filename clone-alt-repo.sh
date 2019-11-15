@@ -28,6 +28,7 @@ fi
 if [[ $repo_target == release* ]]
 then
     echo "Using vanilla release branch: $repo_target"
+    git fetch --all
     git checkout $repo_target
 else
     echo "Repository target is $repo_target"
