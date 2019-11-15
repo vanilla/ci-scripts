@@ -14,7 +14,9 @@ TARGET_DIR="$HOME/workspace/$REPO"
 mkdir $TARGET_DIR
 cd $TARGET_DIR
 git init
-git pull "https://$GITHUB_TOKEN@github.com/vanilla/$REPO.git"
+git remote add origin "https://$GITHUB_TOKEN@github.com/vanilla/$REPO.git"
+git fetch --all
+git reset --hard origin/master
 
 repo_target=$CIRCLE_BRANCH
 
@@ -28,7 +30,6 @@ fi
 if [[ $repo_target == release* ]]
 then
     echo "Using vanilla release branch: $repo_target"
-    git fetch --all
     git checkout $repo_target
 else
     echo "Repository target is $repo_target"
