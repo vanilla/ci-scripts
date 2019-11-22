@@ -1,5 +1,5 @@
 version: 2.1
-publishVersion: 1.2.1
+publishVersion: 1.3
 name: "vanilla/jobs"
 description: "A set of jobs that vanilla needs to run"
 orbs:
@@ -133,6 +133,11 @@ jobs:
                   command: |
                       cd ~/workspace/vanilla
                       ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Library"
+            - run:
+                  name: Model Tests
+                  command: |
+                      cd ~/workspace/vanilla
+                      ./vendor/bin/phpunit -c phpunit.xml.dist --exclude-group=ignore --testsuite="Models"
             - run:
                   name: APIv2 Tests
                   command: |
