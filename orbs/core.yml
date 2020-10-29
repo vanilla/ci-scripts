@@ -43,7 +43,7 @@ executors:
               environment: *db_env
     node:
         docker:
-            - image: circleci/node:lts-browsers
+            - image: circleci/node:12-browsers
 commands:
     checkout:
         description: "Clone necessary repos"
