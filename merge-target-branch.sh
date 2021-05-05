@@ -21,9 +21,9 @@ fi
 
 if [[ -n ${PR_NUMBER} ]]
 then
-    url="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER?access_token=$GITHUB_TOKEN"
+    url="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER"
     CUSTOM_TARGET_BRANCH=$(
-        curl "$url" | jq '.base.ref' | tr -d '"'
+        curl -H  "Authorization: token $GITHUB_TOKEN" "$url" | jq '.base.ref' | tr -d '"'
     )
     echo "Found target branch $CUSTOM_TARGET_BRANCH".
     echo "CUSTOM_TARGET_BRANCH='$CUSTOM_TARGET_BRANCH'" >> $BASH_ENV
