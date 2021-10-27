@@ -26,7 +26,7 @@ then
     if [ -z "$GITHUB_TOKEN" ]; then
         # No github token. Assume we don't need authentication.
         CUSTOM_TARGET_BRANCH=$(
-            curl -H "$url" | jq '.base.ref' | tr -d '"'
+            curl "$url" | jq '.base.ref' | tr -d '"'
         )
     else
         # we have a github token. Make the request with authentication.
