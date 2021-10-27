@@ -22,9 +22,18 @@ fi
 if [[ -n ${PR_NUMBER} ]]
 then
     url="https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$PR_NUMBER"
-    CUSTOM_TARGET_BRANCH=$(
-        curl -H  "Authorization: token $GITHUB_TOKEN" "$url" | jq '.base.ref' | tr -d '"'
-    )
+
+    if [ -z "$GITHUB_TOKEN" ]; then
+        # No github token. Assume we don't need authentication.
+        CUSTOM_TARGET_BRANCH=$(
+            curl -H "$url" | jq '.base.ref' | tr -d '"'
+        )
+    else
+        # we have a github token. Make the request with authentication.
+        CUSTOM_TARGET_BRANCH=$(
+            curl -H  "Authorization: token $GITHUB_TOKEN" "$url" | jq '.base.ref' | tr -d '"'
+        )
+    fi
     echo "Found target branch $CUSTOM_TARGET_BRANCH".
     echo "CUSTOM_TARGET_BRANCH='$CUSTOM_TARGET_BRANCH'" >> $BASH_ENV
 fi
