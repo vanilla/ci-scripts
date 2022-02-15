@@ -1,5 +1,5 @@
 version: 2.1
-publishVersion: 1.3.0
+publishVersion: 1.3.1
 name: "vanilla/jobs"
 description: "A set of jobs that vanilla needs to run"
 orbs:
@@ -10,8 +10,7 @@ aliases:
           name: Install Yarn Packages
           command: |
               cd ~/workspace/vanilla
-              yarn install --pure-lockfile
-              yarn install-all
+              yarn install --immutable
     - &attach_workspace
       attach_workspace:
           at: ~/workspace
