@@ -1,5 +1,5 @@
 version: 2.1
-publishVersion: 2.2.4
+publishVersion: 2.2.5
 name: "vanilla/core"
 description: "A set of executors and commands to build vanilla"
 aliases:
@@ -76,8 +76,10 @@ commands:
                   name: Prepare NGINX
                   command: |
                       sudo apt-get update && sudo apt-get install nginx
+                      [ -f /usr/local/etc/php-fpm.conf.default ] && sudo cp ~/workspace/ci-scripts/nginx/php-fpm.conf /usr/local/etc/ 
+                      [ -f /usr/local/etc/php-fpm.d/www.conf.default ] && sudo cp ~/workspace/ci-scripts/nginx/www.conf /usr/local/etc/php-fpm.d/
                       cd  ~/workspace/repo
-                      php-fpm --daemonize
+                      sudo php-fpm --daemonize
                       sudo ./.circleci/scripts/start-nginx.sh
     composer_install:
         description: Install Composer Packages
