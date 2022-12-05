@@ -50,7 +50,10 @@ commands:
         steps:
             - run:
                   name: Clone Scripts
-                  command: git clone https://github.com/vanilla/ci-scripts.git  ~/workspace/ci-scripts && git checkout php74-integration-phpfpm-failing && git pull
+                  command: |
+                      git clone https://github.com/vanilla/ci-scripts.git  ~/workspace/ci-scripts 
+                      cd ~/workspace/ci-scripts 
+                      git checkout php74-integration-phpfpm-failing && git pull
             - run:
                   name: Clone Repo
                   command: ~/workspace/ci-scripts/clone-repo.sh
