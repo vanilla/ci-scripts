@@ -19,4 +19,4 @@ login/sso.php
 utils/mustacher/vendor/*
 vendor/
 node_modules/
-bower_components/
+bower_components/.git/
